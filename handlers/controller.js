@@ -10,7 +10,7 @@ class Controller {
 
     _attemptUpdateRemoteAPI(url, body) {
         return this.promiseRetry({ retries: 3 }, (retry, number) => {
-            return this.axios.put(url, body).catch(retry);
+            return this.axios.put(url, body, {validateStatus: false}).catch(retry);
         }).then((response) => {
             if (response.status === 200) {
                 return response.data;
@@ -33,8 +33,9 @@ class Controller {
         )).then(
             (data) => res.send(data),
             (err) => {
+                res.json({ statusCode: 400, type: 'error', message: 'Request failed' });
                 if (err == 'Error 2'){
-                    this._attemptUpdateRemoteAPI(this.remoteResourceUrl1, { action: 'rollback' })
+                    this._attemptUpdateRemoteAPI(this.remoteResourceUrl1, { action: 'rollback' });
                 }
             }
         );

@@ -9,22 +9,33 @@ module.exports = function(req, res){
 
     let data = require(`../resource/${resourceType}`);
 
-    if (action === 'update' && value !== null){
+    let oldData = JSON.parse(JSON.stringify(data));
+
+    if (action === 'update' && value !== null) {
 
         data.old.value = data.current.value;
         data.current.value = value;
 
-    } else if (action === 'rollback' && data.old.value !== data.current.value){
+    } else if (action === 'rollback') {
 
         data.current.value = data.old.value;
         data.old.value = null;
 
     } else {
-        res.status(400).json({statusCode: 400, type: 'error', message: 'Unsupported request'});
+        res.status(400).json({ statusCode: 400, type: 'error', message: 'Unsupported request' });
     }
 
     try {
-        fs.writeFileSync(path.resolve(`../slayte/resource/${resourceType}.json`), JSON.stringify(data));
+        if (
+            (action === 'update' && oldData.current.value !== value) ||
+            (action === 'rollback' && oldData.current.value !== data.current.value)
+        ) {
+            console.log(resourceType)
+            fs.writeFile(path.resolve(`../slayte/resource/${resourceType}.json`),
+                JSON.stringify(data),
+                err => { return }
+            );
+        }
         res.status(200).json({ statusCode: 200, type: 'success', message: 'Operation was successful' });
     } catch (err) {
         res.status(400).json({ statusCode: 400, type: 'error', message: err });

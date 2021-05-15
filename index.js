@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -9,7 +10,7 @@ app.use(cors())
 
 app.get('/', (req, res) => res.send('Welcome'));
 
-app.post('/update', (req, res) =>{
+app.get('/update', (req, res) =>{
     const Controller = require('./handlers/controller');
     new Controller().updateRemoteApi(res);
 });
