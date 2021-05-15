@@ -10,7 +10,7 @@ app.use(cors())
 
 app.get('/', (req, res) => res.send('Welcome'));
 
-app.get('/update', (req, res) =>{
+app.post('/update', (req, res) =>{
     const Controller = require('./handlers/controller');
     new Controller().updateRemoteApi(res);
 });

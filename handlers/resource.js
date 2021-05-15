@@ -30,7 +30,6 @@ module.exports = function(req, res){
             (action === 'update' && oldData.current.value !== value) ||
             (action === 'rollback' && oldData.current.value !== data.current.value)
         ) {
-            console.log(resourceType)
             fs.writeFile(path.resolve(`../slayte/resource/${resourceType}.json`),
                 JSON.stringify(data),
                 err => { return }
